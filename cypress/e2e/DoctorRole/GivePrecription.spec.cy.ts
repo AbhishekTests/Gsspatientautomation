@@ -14,11 +14,6 @@ describe('All Prescriptions test cases', function () {
         cy.get('#Patient_Prescription_advice').type('Take Medicine On Time')
         cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').eq(3).click()
         cy.toastermsg(1, 'Created Successfully')
-        // cy.get('.ant-form-item-control-input').eq(10).click().wait(5000)
-        // cy.get('.ant-select-dropdown:not(.ant-select-dropdown-hidden)').should('be.visible')
-        // .find('[class="ant-select-item-option-content"]').eq(2).click({ force: true }).wait(3000)
-        // // cy.get('[class="ant-space-item"]>input').type('Test02',{ force: true })
-        // .find('[class="ant-btn-icon"]').eq(0).click({ force: true })
     })
     it('Prescription Creation with New Symptom Not Present in Dropdown', () => {
        // const testname = 'test';

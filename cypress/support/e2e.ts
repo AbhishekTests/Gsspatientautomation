@@ -19,8 +19,8 @@ import './commands'
 
 beforeEach(() => {
     cy.viewport(1400, 860)
-     cy.hitURLandLogin('drabhinnav00@yopmail.com','Abhinav@123')// doctor
-   // cy.hitURLandLogin('ahan.sharma0000@yopmail.com','Ahan@123')// admin
+    // cy.hitURLandLogin('drabhinnav00@yopmail.com','Abhinav@123')// doctor
+    cy.hitURLandLogin('ahan.sharma0000@yopmail.com','Ahan@123')// admin
  //cy.hitURLandLogin('supportadmin@gsspatientvisit.com','supportadmin@123')// super admin
 //     cy.visit('http://97.74.92.197:3001/login/')
 //     // admin credential

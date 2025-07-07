@@ -23,29 +23,6 @@ describe('Admin Role Management Suite', () => {
       let count = $el.length;
       cy.CreateAdmin(firstnamedec,lastnamedec,phoneno,citynamedec,zipCode,adress)
 
-      // cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').click()
-      // cy.get('[class="ant-typography css-1drr2mu"]').should("have.text", "Create Admin")
-      // cy.get('#firstName').type(firstnamedec)
-      // cy.wait(2000)
-      // // handle state Dropdown
-      // cy.dropdown(7,8)
-      // cy.get('#lastName').type(lastnamedec)
-      // cy.get('#userName').type(firstnamedec + '01')
-      // cy.get('#email').type(firstnamedec + "@yopmail.com")
-      // cy.get('[class="form-control "]').type(phoneno)
-      // cy.get('#city').type(citynamedec)
-      // // handle gender dropdown...................................................................
-      // cy.dropdown(5,1)
-      // cy.get('#zip').type(zipCode);
-      // cy.get('#address').type(adrees);
-      // cy.get('#dateOfBirth').type("2000-09-01")
-      // cy.get('[class="ant-form ant-form-vertical css-1drr2mu"]').click()
-
-      // cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').click().wait(3000)
-      // cy.toastermsg(1, 'Admin Created Successfully')
-      // cy.wait(5000)
-      // cy.get('[class="ant-table-body"]').get('[class="ant-table-cell ant-table-cell-ellipsis"]').eq(3).should("have.text", firstnamedec + "@yopmail.com")
-
       cy.get('[class="ant-select-selector"]').click()
       cy.get('.ant-select-dropdown:not(ant-select-dropdown-hidden)')
         .find('[class="ant-select-item-option-content"]').last().click().should('have.text', '100 / page')

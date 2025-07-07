@@ -95,16 +95,7 @@ describe('Appointments Workflow Tests', () => {
     cy.get('[class="accordion-collapse collapse show"]>ul>li').eq(2).click()
     cy.headingstyle('Upcoming')
     cy.get(initialLength).then(($el) => {
-      // console.log($el.length);
     let count = $el.length;
-    // if(count=== 2){
-    //   cy.get(pagination).should('not.exist');
-    //   cy.get(initialLength).should('not.exist');
-    // }else if(pagination){
-    // 5000cy.get('[class="ant-select-selector"]').click()
-    // cy.get('.ant-select-dropdown:not(ant-select-dropdown-hidden)')
-    // .find('[class="ant-select-item-option-content"]').last().click().should('have.text','100 / page')
-    // cy.wait()
     cy.get(initialLength).should('have.length', count)
     })
   })

@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker'
 
 describe('Appointments Workflow Tests', () => {
   const initialLength = '[class="ant-table-tbody"]>tr';
-  it.only('Create New Appointment and Confirm Successful Submission', function () {
+  it('Create New Appointment and Confirm Successful Submission', function () {
     let lastnamedec = faker.person.lastName();
 
     cy.verifyUserRoleVisible('Admin')
@@ -61,7 +61,7 @@ it('Should successfully update Appointment details', function () {
     cy.toastermsg(1, 'Updated Successfully')
  
   })
-  it.only('Cancel Appointment Successfully and Verify Count Decreases', function () {
+  it('Cancel Appointment Successfully and Verify Count Decreases', function () {
     cy.verifyUserRoleVisible('Admin')
     cy.get('[class="item-name"]').eq(6).click()
     cy.get('[class="accordion-collapse collapse show"]>ul>li').eq(0).click()
