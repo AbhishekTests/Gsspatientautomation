@@ -40,21 +40,30 @@
 declare namespace Cypress {
   interface Chainable {
     dropdown(index: number, index1: number): Chainable<Element>;
+    //  multipledropdown(index: number, index1: number,index2:number): Chainable<Element>;
     datecal(index: number, text: string): Chainable<Element>;
     toastermsg(index: number, text: string): Chainable<Element>;
     headingstyle(text: string): Chainable<Element>;
     verifyUserRoleVisible(text: string): Chainable<Element>;
     selectpateintid(index: number): Chainable<Element>;
     SelectPageSizedropdown(): Chainable<Element>;
-    hitURLandLogin(text1:string,text2:string):Chainable<Element>; 
-    visitpage(URL:string):Chainable<Element>;
-    waitforloader(text:string):Chainable<Element>; 
-    ProfileName(text:string):Chainable<Element>; 
-    CreateDoctor(text:string):Chainable<Element>
-    CreateNurse(firstname:string,lastname:string,phonenumber:string,city:string,zipCode:string,adress:string,emergencyno:string):Chainable<Element>
-    CreateFrontdesk(firstname:string,lastname:string,phonenumber:string,city:string,zipCode:string,adress:string,emergencyno:string):Chainable<Element>
-    CreateAdmin(firstname:string,lastname:string,phonenumber:string,city:string,zipCode:string,adress:string):Chainable<Element>
+    PageSizedropdown(): Chainable<Element>;
+    hitURLandLogin(text1: string, text2: string): Chainable<Element>;
+    visitpage(URL: string): Chainable<Element>;
+    waitforloader(text: string): Chainable<Element>;
+    ProfileName(text: string): Chainable<Element>;
+    CreateDoctor(text: string): Chainable<Element>
+    CreateNurse(firstname: string, lastname: string, phonenumber: string, city: string, zipCode: string, adress: string, emergencyno: string): Chainable<Element>
+    CreateFrontdesk(firstname: string, lastname: string, phonenumber: string, city: string, zipCode: string, adress: string, emergencyno: string): Chainable<Element>
+    CreateAdmin(firstname: string, lastname: string, phonenumber: string, city: string, zipCode: string, adress: string): Chainable<Element>
     Multiselectdropdown(dropdownIndex: number, ...optionIndexes: number[]): Chainable<Element>;
+    CancelAppointment(index: number): Chainable<Element>;
+    updateAppointmentIcon(): Chainable<Element>;
+    PrescriptionIcon(): Chainable<Element>;
+    expandCollapseSection(text: string): Chainable<Element>;
+    selectStartTime(timeIndex: number): Chainable<Element>;
+    selectEndTime(timeIndex: number): Chainable<Element>;
+    CreateBT(BTname: string): Chainable<Element>;
 
   }
 }
@@ -65,12 +74,17 @@ Cypress.Commands.add('dropdown', (index, index1) => {
     .find('[class="ant-select-item-option-content"]').eq(index1).click({ force: true })
 })
 Cypress.Commands.add('datecal', (index, text) => {
-  cy.get('.ant-form-item-control-input-content').eq(index).click().wait(5000)
+  cy.get('.ant-form-item-control-input-content').eq(index).click().wait(3000)
   cy.get('.ant-picker-dropdown:not(.ant-picker-dropdown-hidden)')
     .find('[class="ant-picker-now-btn"]').should('have.text', text).click() //Today
 })
+// Cypress.Commands.add('toastermsg', (text) => {
+//   cy.get('.ant-message-notice-content', { timeout: 000 })
+//     .should('be.visible')
+//     .and('contain.text', text);
+// });
 Cypress.Commands.add('toastermsg', (index, text) => {
-  const toastselector = '[class="ant-message-notice-content"]>div>span';
+  const toastselector = '[class="ant-message-custom-content ant-message-success"]>span';
   cy.get(toastselector, { timeout: 3000 }).eq(index).then(($toast) => {
     const message = $toast.text();
     if (message === text) {
@@ -88,128 +102,177 @@ Cypress.Commands.add('headingstyle', (text) => {
 Cypress.Commands.add('verifyUserRoleVisible', (text) => {
   cy.get('[class="ant-tag ant-tag-cyan css-1drr2mu"]').wait(3000).should('have.text', text)
 })
-Cypress.Commands.add('waitforloader', (selector: string = '.loader')=>{
+Cypress.Commands.add('waitforloader', (selector: string = '.loader') => {
   //cy.waitUntil(() => cy.get(selector).should('not.exist'));
- // cy.get('[class="sign-in-from"]',selector,{timeout: 10000}).should('not.exist');
- cy.get(selector, {timeout: 10000}).should('not.exist');
+  // cy.get('[class="sign-in-from"]',selector,{timeout: 10000}).should('not.exist');
+  cy.get(selector, { timeout: 10000 }).should('not.exist');
 })
 Cypress.Commands.add('selectpateintid', (index) => {
-  cy.get('[class="ant-input-affix-wrapper css-1drr2mu ant-input-outlined"]').eq(index).type('100000').wait(2000)
+  cy.get('[class="ant-input-affix-wrapper css-1drr2mu ant-input-outlined"]').eq(index).type('10000').wait(2000)
   cy.get('.ant-select-dropdown:not(ant-select-dropdown-hidden)')
     .find('.ant-select-item-option>div').should('be.visible').last().click({ force: true })
+})
+Cypress.Commands.add('PageSizedropdown', () => {
+  cy.get('body').then(($body) => {
+
+    if ($body.find('.ant-select-selector').length > 0) {
+
+      cy.get('.ant-select-selector')
+        .should('be.visible')
+        .click();
+
+      cy.get('.ant-select-dropdown:not(.ant-select-dropdown-hidden)')
+        .find('.ant-select-item-option-content')
+        .last()
+        .click();
+
+      cy.log('Dropdown handled');
+
+    } else {
+
+      cy.log('Dropdown not found, continuing test');
+
+    }
+
+  });
 })
 Cypress.Commands.add('SelectPageSizedropdown', () => {
   cy.get('[class="ant-select-selector"]').click()
   cy.get('.ant-select-dropdown:not(ant-select-dropdown-hidden)')
     .find('[class="ant-select-item-option-content"]').last().click().should('have.text', '100 / page')
 })
-Cypress.Commands.add('visitpage',(URL)=>{
+Cypress.Commands.add('visitpage', (URL) => {
   cy.visit(URL)
- })
- Cypress.Commands.add('hitURLandLogin',(text1,text2)=>{
- cy.visitpage('http://97.74.92.197:3001/login/')
- cy.waitforloader('[class="ant-spin-dot ant-spin-dot-spin"]')
- cy.get('#username').type(text1)
- cy.get('#exampleInputPassword1').type(text2)
- cy.get('[class="btn btn-primary float-end btn btn-primary"]').click()
- })
- Cypress.Commands.add('ProfileName', (text) => {
+})
+Cypress.Commands.add('CancelAppointment', (index) => {
+  cy.get('.ant-tag-red')
+    .filter(':not(.ant-tag-disabled)').eq(index).click();
+  cy.get('[class="ant-btn css-1drr2mu ant-btn-default ant-btn-dangerous okBtn"]').should('have.text', 'Yes').click()
+
+})
+
+Cypress.Commands.add('updateAppointmentIcon', () => {
+  cy.contains('td .ant-tag', 'Confirmed')
+    .first()
+    .closest('tr')
+    .find('[data-icon="edit"]')
+    .click();
+
+})
+Cypress.Commands.add('PrescriptionIcon', () => {
+  cy.wait(2000);
+  cy.contains('td .ant-tag', 'Confirmed').first()
+    .closest('tr')
+    .find('[class="ri-file-list-3-line"]')
+    .click();
+
+})
+
+Cypress.Commands.add('hitURLandLogin', (text1, text2) => {
+  cy.visitpage('http://97.74.92.197:3001/login/')
+  cy.waitforloader('[class="ant-spin-dot ant-spin-dot-spin"]')
+  cy.get('#username').type(text1)
+  cy.get('#exampleInputPassword1').type(text2)
+  cy.get('[class="btn btn-primary float-end btn btn-primary"]').click()
+})
+Cypress.Commands.add('ProfileName', (text) => {
   cy.get('.mt-3 > p').should('have.text', text)
-  
+
 })
 
 Cypress.Commands.add('CreateDoctor', (userName) => {
   //let firstnamedec = faker.person.firstName();
-  cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]')
-        .should('have.text', 'Create Doctor')
-        .click()
-      cy.get('[class="ant-typography css-1drr2mu"]').should('have.text', 'Register Doctor');
-      cy.get('#userName').type('Dr' + userName).should('be.visible');
-      cy.get('#email').type(userName + '01@yopmail.com').should('be.visible');
-      cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').click();
-      // Wait for success message
-      cy.wait(2000)
-      cy.toastermsg(1, 'Link send successfully')
-  
+  cy.CreateBT('Create Doctor')
+  // cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]')
+  //       .should('have.text', 'Create Doctor')
+  //       .click()
+  cy.get('[class="ant-typography css-1drr2mu"]').should('have.text', 'Register Doctor');
+  cy.get('#userName').type('Dr' + userName).should('be.visible');
+  cy.get('#email').type(userName + '01@yopmail.com').should('be.visible');
+  cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').click();
+  // Wait for success message
+  cy.wait(2000)
+  cy.toastermsg(1, 'Created Successfully')
+
 })
-Cypress.Commands.add('CreateNurse', (firstname,lastname,phonenumber,city,zipCode,adress,emergencyno) => {
+Cypress.Commands.add('CreateNurse', (firstname, lastname, phonenumber, city, zipCode, adress, emergencyno) => {
+  cy.CreateBT('Create Nurse')
+  cy.get('[class="ant-typography css-1drr2mu"]').should("have.text", "Create Nurse")
+  cy.get('#firstName').type(firstname)
+  cy.wait(2000)
+  cy.get('.ant-form-item-control-input-content').eq(7).click()
+  cy.get('.ant-select-dropdown:not(.ant-select-dropdown-hidden)')
+    .find('[class="ant-select-item-option-content"]').should('be.visible').eq(8).click({ force: true })
+
+  cy.get('#lastName').type(lastname);
+  cy.get('#userName').type(firstname + '01');
+  cy.get('#email').type(firstname + "@yopmail.com");
+  cy.get('[class="form-control "]').type(phonenumber);
+  cy.get('#city').type(city);
+  cy.get('.ant-form-item-control-input-content').eq(13).click()
+  cy.get('.ant-select-dropdown:not(.ant-select-dropdown-hidden)')
+    .find('[class="ant-select-item-option-content"]').should('be.visible').eq(1).click({ force: true })
+  cy.get('#zip').type(zipCode);
+  cy.get('#address').type(adress);
+  cy.get('#dateOfBirth').type("02-05-2000");
+  cy.get('#emergencyNumber').type(emergencyno);
+  cy.get('[class="ant-form-item-control-input-content"]').eq(5).click()
+  cy.get('.ant-select-dropdown:not(.ant-select-dropdown-hidden)')
+    .find('[class="ant-select-item-option-content"]').eq(1).click({ force: true })
   cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').click()
-      cy.get('[class="ant-typography css-1drr2mu"]').should("have.text", "Create Nurse")
-      cy.get('#firstName').type(firstname)
-      cy.wait(2000)
-      cy.get('.ant-form-item-control-input-content').eq(7).click()
-      cy.get('.ant-select-dropdown:not(.ant-select-dropdown-hidden)')
-        .find('[class="ant-select-item-option-content"]').should('be.visible').eq(8).click({ force: true })
-
-      cy.get('#lastName').type(lastname);
-      cy.get('#userName').type(firstname + '01');
-      cy.get('#email').type(firstname + "@yopmail.com");
-      cy.get('[class="form-control "]').type(phonenumber);
-      cy.get('#city').type(city);
-      cy.get('.ant-form-item-control-input-content').eq(13).click()
-      cy.get('.ant-select-dropdown:not(.ant-select-dropdown-hidden)')
-        .find('[class="ant-select-item-option-content"]').should('be.visible').eq(1).click({ force: true })
-      cy.get('#zip').type(zipCode);
-      cy.get('#address').type(adress);
-      cy.get('#dateOfBirth').type("2000-09-01");
-      cy.get('#emergencyNumber').type(emergencyno);
-      cy.get('[class="ant-form-item-control-input-content"]').eq(5).click()
-      cy.get('.ant-select-dropdown:not(.ant-select-dropdown-hidden)')
-        .find('[class="ant-select-item-option-content"]').eq(1).click({ force: true })
-      cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').click()
-      cy.wait(2000)
-      cy.toastermsg(1, 'Nurse Created Successfully')
+  cy.wait(2000)
+  cy.toastermsg(1, 'Nurse Created Successfully')
 })
 
-Cypress.Commands.add('CreateFrontdesk', (firstname,lastname,phonenumber,city,zipCode,adress,emergencyno) => {
+Cypress.Commands.add('CreateFrontdesk', (firstname, lastname, phonenumber, city, zipCode, adress, emergencyno) => {
   cy.wait(2000)
-   cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').click()
-      cy.get('[class="ant-typography css-1drr2mu"]').should("have.text", "Create FrontDesk")
-      cy.get('#firstName').type(firstname)
-      cy.wait(2000)
-      cy.get('.ant-form-item-control-input-content').eq(7).click()
-      cy.get('.ant-select-dropdown:not(.ant-select-dropdown-hidden)')
-        .find('[class="ant-select-item-option-content"]').should('be.visible').eq(8).click({ force: true })
-      cy.get('#lastName').type(lastname)
-      cy.get('#userName').type(firstname + '01')
-      cy.get('#email').type(firstname + "@yopmail.com")
-      cy.get('[class="form-control "]').type(phonenumber)
-      cy.get('#city').type(city)
-      cy.dropdown(13, 1)
-      cy.get('#zip').type(zipCode);
-      cy.get('#address').type(adress);
-      cy.get('#dateOfBirth').type("2002-07-01");
-      cy.get('#emergencyNumber').type(emergencyno);
-      cy.get('[class="ant-form-item-control-input-content"]').eq(5).click()
-      cy.get('.ant-select-dropdown:not(.ant-select-dropdown-hidden)')
-        .find('[class="ant-select-item-option-content"]').eq(1).click({ force: true })
-      cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').click()
-      cy.toastermsg(1,'FrontDesk Created Successfully')
+  cy.CreateBT('Create Frontdesk')
+  cy.get('[class="ant-typography css-1drr2mu"]').should("have.text", "Create FrontDesk")
+  cy.get('#firstName').type(firstname)
+  cy.wait(2000)
+  cy.get('.ant-form-item-control-input-content').eq(7).click()
+  cy.get('.ant-select-dropdown:not(.ant-select-dropdown-hidden)')
+    .find('[class="ant-select-item-option-content"]').should('be.visible').eq(8).click({ force: true })
+  cy.get('#lastName').type(lastname)
+  cy.get('#userName').type(firstname + '01')
+  cy.get('#email').type(firstname + "@yopmail.com")
+  cy.get('[class="form-control "]').type(phonenumber)
+  cy.get('#city').type(city)
+  cy.dropdown(13, 1)
+  cy.get('#zip').type(zipCode);
+  cy.get('#address').type(adress);
+  cy.get('#dateOfBirth').type("01-05-2000");
+  cy.get('#emergencyNumber').type(emergencyno);
+  cy.get('[class="ant-form-item-control-input-content"]').eq(5).click()
+  cy.get('.ant-select-dropdown:not(.ant-select-dropdown-hidden)')
+    .find('[class="ant-select-item-option-content"]').eq(1).click({ force: true })
+  cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').click()
+  cy.toastermsg(1, 'FrontDesk Created Successfully')
 })
-Cypress.Commands.add('CreateAdmin', (firstname,lastname,phonenumber,city,zipCode,adress) => {
+Cypress.Commands.add('CreateAdmin', (firstname, lastname, phonenumber, city, zipCode, adress) => {
   cy.wait(2000)
-   cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').click()
-      cy.get('[class="ant-typography css-1drr2mu"]').should("have.text", "Create Admin")
-      cy.get('#firstName').type(firstname)
-      cy.wait(2000)
-      // handle state Dropdown
-      cy.dropdown(7,8)
-      cy.get('#lastName').type(lastname)
-      cy.get('#userName').type(firstname + '01')
-      cy.get('#email').type(firstname + "@yopmail.com")
-      cy.get('[class="form-control "]').type(phonenumber)
-      cy.get('#city').type(city)
-      // handle gender dropdown...................................................................
-      cy.dropdown(5,1)
-      cy.get('#zip').type(zipCode);
-      cy.get('#dateOfBirth').type("2000-09-01")
-      cy.get('#address').type(adress);
-      cy.get('[class="ant-form ant-form-vertical css-1drr2mu"]').click()
+  cy.CreateBT('Create Admin')
+  cy.get('[class="ant-typography css-1drr2mu"]').should("have.text", "Create Admin")
+  cy.get('#firstName').type(firstname)
+  cy.wait(2000)
+  // handle state Dropdown
+  cy.dropdown(7, 8)
+  cy.get('#lastName').type(lastname)
+  cy.get('#userName').type(firstname + '01')
+  cy.get('#email').type(firstname + "@yopmail.com")
+  cy.get('[class="form-control "]').type(phonenumber)
+  cy.get('#city').type(city)
+  // handle gender dropdown...................................................................
+  cy.dropdown(5, 1)
+  cy.get('#zip').type(zipCode);
+  cy.get('#dateOfBirth').type("19-05-2000")
+  cy.get('#address').type(adress);
+  cy.get('[class="ant-form ant-form-vertical css-1drr2mu"]').click()
 
-      cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').click().wait(3000)
-      cy.toastermsg(1, 'Admin Created Successfully')
-      cy.wait(5000)
-      cy.get('[class="ant-table-body"]').get('[class="ant-table-cell ant-table-cell-ellipsis"]').eq(3).should("have.text", firstname + "@yopmail.com")
+  cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').click().wait(3000)
+  cy.toastermsg(1, 'Admin Created Successfully')
+  cy.wait(5000)
+  cy.get('[class="ant-table-body"]').get('[class="ant-table-cell ant-table-cell-ellipsis"]').eq(3).should("have.text", firstname + "@yopmail.com")
 })
 Cypress.Commands.add('Multiselectdropdown', (dropdownIndex: number, ...optionIndexes: number[]) => {
   // Click on the specified dropdown
@@ -222,9 +285,50 @@ Cypress.Commands.add('Multiselectdropdown', (dropdownIndex: number, ...optionInd
         cy.get('[class="ant-select-item-option-content"]').eq(index).click();
       });
     });
+  //     Cypress.Commands.add('multipledropdown', (index, index1,index2) => {
+  //   cy.get('.ant-form-item-control-input').eq(index).click().wait(2000)
+  //   cy.get('.ant-select-dropdown:not(.ant-select-dropdown-hidden)').should('be.visible')
+  //     .find('[class="ant-select-item-option-content"]').eq(index1).click({ force: true })
+  //     .find('[class="ant-select-item-option-content"]').eq(index2).click({ force: true })
+
+
+  // })
 
   // Close dropdown by pressing ESC or clicking outside (optional)
- // cy.get('body').click(0, 0);
+  // cy.get('body').click(0, 0);
 });
- 
- 
+Cypress.Commands.add('expandCollapseSection', (sectionName) => {
+
+  cy.contains('.ant-collapse-header-text', sectionName)
+    .closest('.ant-collapse-item')
+    .find('.ant-collapse-header')
+    .then(($header) => {
+
+      // If section is closed, open it
+      if ($header.attr('aria-expanded') === 'false') {
+        cy.wrap($header).click({ force: true });
+      }
+    });
+});
+Cypress.Commands.add('selectStartTime', (timeIndex) => {
+  cy.get('[class="ant-picker-input"]>input[placeholder="Start time"]').last().click()
+  cy.get('.ant-picker-dropdown:not(.ant-picker-dropdown-hidden)')
+    .should('be.visible')
+
+    // Select time
+    .find('.ant-picker-time-panel-cell-inner').eq(timeIndex).click();
+  cy.get('[class="ant-btn css-1drr2mu ant-btn-primary ant-btn-sm"]').click()
+});
+Cypress.Commands.add('selectEndTime', (timeIndex) => {
+  //cy.get('[class="ant-picker-input"]>input[placeholder="Start time"]').last().click()
+  cy.get('.ant-picker-dropdown:not(.ant-picker-dropdown-hidden)')
+    .should('be.visible')
+
+    // Select time
+    .find('.ant-picker-time-panel-cell-inner').eq(timeIndex).click();
+  cy.get('[class="ant-btn css-1drr2mu ant-btn-primary ant-btn-sm"]').click()
+});
+
+Cypress.Commands.add('CreateBT', (BTname) => {
+  cy.get('[class="ant-btn css-1drr2mu ant-btn-default btncolor"]').should('have.text', BTname).click()
+});

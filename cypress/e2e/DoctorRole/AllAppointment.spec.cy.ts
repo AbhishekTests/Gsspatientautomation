@@ -8,30 +8,30 @@ describe('Appointments Workflow Tests', () => {
     cy.get('[class="item-name"]').eq(6).click()
     cy.get('[class="accordion-collapse collapse show"]>ul>li').eq(0).click()
     cy.headingstyle('Appointments').wait(3000)
-    //  cy.SelectPageSizedropdown()
-      cy.wait(5000)
-      cy.get(initialLength).then(($el) => {
+    cy.SelectPageSizedropdown()
+    cy.wait(5000)
+    cy.get(initialLength).then(($el) => {
       console.log($el.length);
       let count = $el.length;
-      cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').should('have.text', 'Add New')
-      cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').click()
+      cy.get('[class="ant-btn css-1drr2mu ant-btn-default btncolor"]').should('have.text', 'Add New').click()
+
       cy.get('[class="ant-typography css-1drr2mu"]').eq(0).should('have.text', 'Appointment')
       cy.selectpateintid(0)
       cy.wait(3000)
-      cy.get('[class="ant-col ant-col-9 ant-form-item-label css-1drr2mu"]').should('have.text', 'Appointments')
-      cy.dropdown(18,2)  // Handle speciality field
+      cy.get('.custom-form-heading .ant-typography').should('have.text', 'Appointment')
+      // cy.dropdown(18,2)  // Handle speciality field
       cy.get('#lastName').clear().type(lastnamedec)
-      cy.dropdown(19,0) //handle referd to dropdown
-      cy.wait(5000)                 
-      cy.datecal(20,'Today') // handle appointment date 
+      cy.dropdown(19, 0) //handle referd to dropdown
+      cy.wait(5000)
+      cy.datecal(20, 'Today') // handle appointment date 
       cy.get('#reasonForAppoinment').type('Dark spots on the face')
       cy.datecal(21, 'Now') //  handle Appointment time
       cy.dropdown(26, 1) // Handle Language dropdown
-     
-      cy.dropdown(28, 5) // Handle Test Dropdown
-      cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').eq(2).should('have.text', 'Submit').click()
-       cy.wait(3000)
-      cy.toastermsg(1,'Created Successfully')
+
+      // cy.dropdown(28, 5) // Handle Test Dropdown
+      cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').should('have.text', 'Save ').click()
+      cy.wait(3000)
+      cy.toastermsg(1, 'Created Successfully')
       cy.SelectPageSizedropdown()
       cy.get(initialLength).should('have.length', count + 1)
     })
@@ -48,15 +48,17 @@ describe('Appointments Workflow Tests', () => {
     cy.get('[class="accordion-collapse collapse show"]>ul>li').eq(0).click()
     cy.headingstyle('Appointments')
     cy.wait(3000)
-    cy.get('[class="ant-tag ant-tag-blue css-1drr2mu"]').eq(1).click()
+
+    cy.updateAppointmentIcon();
 
     cy.get('#city').clear().type(citynamedec)
     cy.get('#address').clear().type(adress);
 
     cy.dropdown(25, 0)//Handle BloodGroup Dropdown
-    cy.dropdown(27, 5)// Handle Test Dropdown
-    cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').eq(2).should('have.text', 'Update').click()
-    cy.toastermsg(1, 'Updated Successfully')
+
+    cy.get('[class="ant-btn css-1drr2mu ant-btn-primary"]').should('have.text', 'Update ').click()
+    cy.wait(2000)
+    cy.toastermsg(1, 'Updated successfully');
 
   })
   it('Cancel Appointment Successfully and Verify status is cancelled', function () {
@@ -64,12 +66,13 @@ describe('Appointments Workflow Tests', () => {
     cy.get('[class="item-name"]').eq(6).click()
     cy.get('[class="accordion-collapse collapse show"]>ul>li').eq(0).click()
     cy.headingstyle('Appointments')
-    
-      cy.get('[class="ant-tag ant-tag-blue css-1drr2mu"]').eq(2).click()
-      cy.get('[class="ant-btn css-1drr2mu ant-btn-default ant-btn-dangerous"]').click()
-      cy.toastermsg(1, 'Cancelled Successfully')
-      cy.get('[class="ant-tag ant-tag-volcano css-1drr2mu"]>span>span').eq(0).should('have.text','Cancelled')
-      //cy.get(initialLength).should('have.length', count - 1)
+
+    //cy.get('[class="ant-tag ant-tag-red css-1drr2mu"]').eq(2).click()
+
+    cy.CancelAppointment(1)
+    cy.toastermsg(1, 'Cancelled Successfully')
+    cy.get('[class="ant-tag ant-tag-volcano css-1drr2mu"]>span>span').eq(0).should('have.text', 'Cancelled')
+
   })
   it('Verify Total Number of Items in Today’s List', function () {
     cy.verifyUserRoleVisible('Doctor')
@@ -79,10 +82,10 @@ describe('Appointments Workflow Tests', () => {
     cy.get(initialLength).then(($el) => {
       console.log($el.length);
       let count = $el.length;
-      if(count == 1) {
+      if (count == 1) {
         cy.get(initialLength).should('not.exist');
         cy.log('Inside count is equal to 1')
-      }else{
+      } else {
         cy.log('I am inside else command')
         cy.get(initialLength).should('have.length', count)
       }
@@ -95,8 +98,8 @@ describe('Appointments Workflow Tests', () => {
     cy.get('[class="accordion-collapse collapse show"]>ul>li').eq(2).click()
     cy.headingstyle('Upcoming')
     cy.get(initialLength).then(($el) => {
-    let count = $el.length;
-    cy.get(initialLength).should('have.length', count)
+      let count = $el.length;
+      cy.get(initialLength).should('have.length', count)
     })
   })
 })

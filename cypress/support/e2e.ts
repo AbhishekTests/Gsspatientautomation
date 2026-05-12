@@ -19,18 +19,10 @@ import './commands'
 
 beforeEach(() => {
     cy.viewport(1400, 860)
-    // cy.hitURLandLogin('drabhinnav00@yopmail.com','Abhinav@123')// doctor
-    cy.hitURLandLogin('ahan.sharma0000@yopmail.com','Ahan@123')// admin
- //cy.hitURLandLogin('supportadmin@gsspatientvisit.com','supportadmin@123')// super admin
-//     cy.visit('http://97.74.92.197:3001/login/')
-//     // admin credential
-//     cy.get('#username').type('rahul02@yopmail.com')
-//     cy.get('#exampleInputPassword1').type('Rahul@123')
-    
- //     // superadmin credential
- //     // cy.get('#username').type('supportadmin@gsspatientvisit.com')
- //     // cy.get('#exampleInputPassword1').type('supportadmin@123')
- //     cy.get('[class="btn btn-primary float-end btn btn-primary"]').click().wait(3000)
+    cy.hitURLandLogin('drnitin0@yopmail.com','Admin@123')// doctor
+    //cy.hitURLandLogin('rahul31@yopmail.com','Admin@123')// admin
+ 
+ 
 
 
     });
