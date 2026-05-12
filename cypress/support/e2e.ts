@@ -19,8 +19,8 @@ import './commands'
 
 beforeEach(() => {
     cy.viewport(1400, 860)
-    cy.hitURLandLogin('drnitin0@yopmail.com','Admin@123')// doctor
-    //cy.hitURLandLogin('rahul31@yopmail.com','Admin@123')// admin
+    //cy.hitURLandLogin('drnitin0@yopmail.com','Admin@123')// doctor
+    cy.hitURLandLogin('rahul31@yopmail.com','Admin@123')// admin
  
  
 
